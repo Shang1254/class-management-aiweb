@@ -12,3 +12,6 @@ __pycache__/
 缴费中心/config.json
 
 参赛材料/.preview/
+
+参赛材料/.rec/
+参赛材料/演示视频-测试.webm
