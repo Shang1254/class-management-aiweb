@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>班级缴费中心 · 团费与班费收缴</title>
+  <link rel="icon" href="图标/应用图标.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="pay.css?v=5">
+</head>
+<body>
+  <!-- 唯一挂载点：登录页 / 连接页 / 应用壳都渲染在这里 -->
+  <div id="pay-root"></div>
+
+  <!-- 注意：普通 script（非 module），保证双击以 file:// 打开也能运行；
+       加载顺序：核心(存储/契约桥) → 网关 → AI → 审计 → 页面层 → 启动 -->
+  <script src="js/pay-core.js?v=5"></script>
+  <script src="js/pay-gateway.js?v=5"></script>
+  <script src="js/pay-ai.js?v=5"></script>
+  <script src="js/pay-audit.js?v=5"></script>
+  <script src="js/pay-app.js?v=5"></script>
+  <script>
+    // 启动：契约桥先判断「宿主嵌入 / 独立运行」，再由页面层接管
+    PayBridge.boot();
+    PayApp.start();
+  </script>
+</body>
+</html>

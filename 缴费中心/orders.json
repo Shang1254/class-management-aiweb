@@ -1,0 +1,20 @@
+{
+ "BJTEST001": {
+  "out_trade_no": "BJTEST001",
+  "amount_fen": 8888,
+  "status": "PAID",
+  "subject": "测试",
+  "paid_at": "2026-11-03 08:48:29",
+  "trade_no": "TRD20261103084829",
+  "paid_source": "notify:sim-alipay"
+ },
+ "BJTEST002": {
+  "out_trade_no": "BJTEST002",
+  "amount_fen": 100,
+  "status": "PAID",
+  "subject": "测试",
+  "paid_at": "2026-11-03 08:48:29",
+  "trade_no": "TRDTEST",
+  "paid_source": "test"
+ }
+}

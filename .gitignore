@@ -1,0 +1,12 @@
+node_modules/
+Thumbs.db
+.DS_Store
+*.log
+
+__pycache__/
+*.pyc
+
+.dumate/
+
+# 缴费中心本地配置（含沙箱密钥，严禁入库）
+缴费中心/config.json

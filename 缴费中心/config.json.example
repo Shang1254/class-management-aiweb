@@ -1,0 +1,21 @@
+{
+  "_说明": "把本文件重命名为 config.json 后生效；不建 config.json 时服务以 mock 演示模式运行，同样能跑通全链路",
+
+  "port": 8818,
+  "secret": "demo-secret-please-change",
+  "autoPaidDelay": 8,
+
+  "_autoPaidDelay_说明": "mock 模式下下单 N 秒后自动模拟支付成功，0 表示只能用 /api/pay/mockpay 手动触发",
+
+  "alipay": {
+    "_说明": "app_id 与 private_key 都填好后，服务自动切换为 alipay-sandbox 模式（需 pip install pycryptodome）；正式上线换 gateway 为正式网关并换正式密钥，代码不变",
+    "app_id": "",
+    "gateway": "https://openapi-sandbox.dl.alipaydev.com/gateway.do",
+    "method": "alipay.trade.precreate",
+    "notify_url": "",
+    "private_key": "",
+    "_private_key_说明": "「应用私钥」单行 base64 原样粘贴，PKCS8/PKCS1 均支持：用密钥工具生成就粘工具给的私钥；若从沙箱快速创建接口获取，Python 等非 Java 语言按官方规则用 appPrivatePkcsKey（PKCS#1）字段。只存本文件，绝不能写进前端代码或聊天窗口",
+    "alipay_public_key": "",
+    "_alipay_public_key_说明": "上传应用公钥后，平台「接口加签」页回显的「支付宝公钥」（注意不是你的应用公钥）；填上后本服务的异步通知验签自动切换为 RSA2 真实验签，留空则演示签名"
+  }
+}

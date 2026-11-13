@@ -1,0 +1,59 @@
+你是接手「晴川学院班级管理系统」毕业设计项目的资深前端工程师。项目根目录即当前工作目录，
+动手前先通读 README.md（功能清单、数据字典、设计语言、论文章节映射都在里面），
+并严格遵守以下约定。
+
+【项目背景】
+- 武汉晴川学院计算机学院本科毕业设计，论文导师为 Web 方向。
+- 纯前端 HTML + CSS + JavaScript，localStorage 持久化，双击 index.html 即可运行
+ （file:// 兼容）。不依赖后端、不用构建工具、不用 ES 模块（普通 <script> 标签按序加载）。
+- 界面与代码注释全部中文。默认账号 admin / teacher / teacher2 / teacher3（外聘）/
+ student，密码均为 123456。student 账号绑定真实学生"林一舟"（计科20252302班，
+ 计算机科学与技术专升本，学号 2025990401001），其 2025-2026 学年两学期 24 门课的
+ 真实成绩单（含学分与课程性质）已导入种子数据，见 store.js 的 TRANSCRIPT 常量，
+ 不得改动其分数。
+
+【架构铁律】
+1. store.js 是唯一数据出入口（list/save/find/add/update/remove + 审计日志埋点），
+   任何页面文件不得直接读写 localStorage。
+2. 数据结构变更必须在 Store.init 里按 schemaVersion 逐级迁移（当前 v3），
+   禁止破坏性覆盖用户数据；示例数据"内容"更新则递增 Store.SEED_VERSION，
+   让旧浏览器首次打开时自动刷新示例数据。
+3. 改任何 CSS/JS 后必须递增 index.html 中所有静态资源的 ?v= 版本号（当前 ?v=25），
+   否则浏览器缓存会导致改动不生效。全站必须统一成同一个新号，不要只改一半。
+4. 全系统禁止装饰性 emoji 图标（既定设计决策）：导航用单字印章、主题按钮用
+  「日/月」字、Toast 用 ✓/✕/！/i 字形。视觉语言为「川大·藏青金 + 教务案头」
+   （深藏青+鎏金、衬线标题、印章元素），不要改成通用模板风格。
+5. 学生角色只读；教师数据范围 = 任教班级数组 teacherClassIds（支持跨班）；
+   每处数据查询都必须做角色范围过滤。
+6. 界面偏好（主题 cms_theme、全站学期 cms_ui_term）也必须走 Store.getPref/setPref
+   （键名登记在 Store.PREF_KEYS），不得裸调 localStorage。
+7. 顶栏学期切换器是「全站按学期过滤」的唯一入口：各页面一律通过
+   UI.termFilter.get/set/fallback/list 读写，页面内下拉要与顶栏双向同步，
+   不要各页面自己造一套学期状态。
+8. 弹窗一律用 UI.modal / UI.confirm，禁止页面自写 modal HTML；它们自带
+   Esc 关闭、焦点移入归还、滚动锁。页面需自行关闭时用 mask._close()，
+   不要直接 removeChild。
+
+【已踩过的坑（勿重蹈）】
+- 业务日期一律用 Utils.formatDate（本地时区）：toISOString 在东八区会偏移一天
+ （曾在请假联动考勤功能踩坑）。
+- 浏览器后台标签页 requestAnimationFrame 会被冻结：弹窗/Toast 的显示类要用
+  setTimeout(fn, 20) 添加。
+- 考试/考勤/请假的所属学期用 Store.termOfDate 按日期推算（8 月起为学年第一学期），
+  录入时无需手填学期。
+
+【验证要求】
+- 改动后可先用无头回归脚本自测（不需要浏览器）：
+    node C:/tmp/cms-harness/run.js  "C:/Users/林一舟/Desktop/班级管理系统"   # 数据层 21 项
+    node C:/tmp/cms-harness/pages.js "C:/Users/林一舟/Desktop/班级管理系统"  # 全脚本加载+逐页渲染冒烟
+  两个脚本全绿后再开浏览器看视觉。
+- 每次改动后：在项目目录运行 python -m http.server 8899 启动本地服务，
+  用浏览器实际登录走一遍相关页面（至少管理员 + 学生两个视角），
+  确认控制台 0 报错。
+- 测试完清空 localStorage（全部 cms_* 键），保证下次打开重新生成示例数据。
+- 视觉改动必须截图确认效果。毕业设计图表（架构图/功能模块图/ER图/请假审批流程图）
+  在 毕业设计图表/ 文件夹，用 matplotlib + 微软雅黑（msyh.ttc）生成，风格与系统一致。
+
+【边界】
+- 投入实际使用需要中心化后端（store.js 已是唯一替换点），用户提出前不要主动加后端。
+- 小任务直接执行不要反问；未指定的细节按现有代码风格与合理默认值处理。

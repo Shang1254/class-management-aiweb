@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>晴川学院班级管理系统</title>
+  <!-- 站点图标：藏青金「晴」字印章（与全站印章视觉一致，不使用 emoji） -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2316337a'/%3E%3Crect x='10' y='10' width='80' height='80' rx='11' fill='none' stroke='%23c9a24b' stroke-width='4'/%3E%3Ctext x='50' y='52' font-family='Songti SC,SimSun,serif' font-size='52' font-weight='700' fill='%23c9a24b' text-anchor='middle' dominant-baseline='central'%3E%E6%99%B4%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css?v=115">
+  <!-- 全局异常收集：脚本加载/运行异常先进入队列，App 启动后统一写入审计日志并提示。
+       放在所有业务脚本之前，保证启动阶段的异常不会“静默消失”。 -->
+  <script>
+    (function () {
+      window.__CMS_ERRORS__ = [];
+      function push(err) {
+        window.__CMS_ERRORS__.push(err);
+        if (typeof window.__CMS_ON_ERROR__ === 'function') {
+          try { window.__CMS_ON_ERROR__(err); } catch (e) { /* 提示失败不影响业务 */ }
+        }
+      }
+      window.addEventListener('error', function (e) {
+        // 资源加载失败（img/script）由 target 判定，不计入“运行异常”，避免离线 CDN 噪声
+        if (e && e.target && e.target !== window && e.target.tagName) return;
+        push({
+          message: (e && e.message) || '未知异常',
+          source: (e && e.filename) || '',
+          line: (e && e.lineno) || 0,
+          at: Date.now()
+        });
+      }, true);
+      window.addEventListener('unhandledrejection', function (e) {
+        var r = e && e.reason;
+        push({
+          message: '未处理的异步异常：' + ((r && r.message) || String(r || '未知')),
+          source: '', line: 0, at: Date.now()
+        });
+      });
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- 键盘用户跳过导航直达内容（获得焦点前不可见） -->
+  <a class="skip-link" href="#page-content">跳到主内容</a>
+
+  <!-- ==================== 登录视图（校园实景 Hero） ==================== -->
+  <div id="login-view" class="login-view hidden">
+    <div class="login-hero">
+      <img id="login-photo" class="login-photo" src="" alt="武汉晴川学院校园">
+      <div class="login-overlay"></div>
+    </div>
+    <button id="btn-theme-login" class="theme-fab" type="button" title="切换深浅主题" aria-label="切换深浅主题">月</button>
+
+    <div class="login-stage">
+      <!-- 左侧品牌区（大屏显示）：白色校名标来自学校官网 -->
+      <div class="login-brand">
+        <img class="login-badge" src="images/qxu-logo.png" alt="武汉晴川学院" onerror="this.style.display='none'">
+        <h2 class="login-app-name">班级管理<b>系统</b></h2>
+        <div class="login-brand-rule"></div>
+        <p class="login-slogan" id="login-slogan"></p>
+        <p class="login-motto">明体达用 · 抱璞开新</p>
+        <ul class="login-feats">
+          <li>成绩分析 · 趋势折线与个人雷达画像</li>
+          <li>考勤月报 · 异常考勤自动预警</li>
+          <li>三级权限 · 操作日志全程审计</li>
+        </ul>
+        <p class="login-copy">武汉晴川学院 · 计算机学院 · 毕业设计作品</p>
+      </div>
+
+      <!-- 右侧登录卡（深色玻璃 + 金色流光描边） -->
+      <div class="login-card">
+        <!-- 登录徽记：四字印章（与仪表盘 hero-seal 同源，全站不使用 emoji） -->
+        <div class="login-logo" aria-hidden="true"><span>晴</span><span>川</span><span>教</span><span>务</span></div>
+        <h1>欢迎回来</h1>
+        <p class="login-sub">武汉晴川学院 · 计算机学院</p>
+        <form id="login-form" novalidate>
+          <div class="form-item">
+            <label for="login-username">用户名</label>
+            <input id="login-username" class="input" type="text" placeholder="请输入用户名" autocomplete="username">
+          </div>
+          <div class="form-item">
+            <label for="login-password">密码</label>
+            <input id="login-password" class="input" type="password" placeholder="请输入密码" autocomplete="current-password">
+          </div>
+          <div id="login-error" class="login-error hidden"></div>
+          <button type="submit" class="btn btn-primary btn-block">登 录</button>
+        </form>
+        <div class="login-tips">
+          <p>默认账号（密码均为 <b>123456</b>）：</p>
+          <p>管理员 admin ｜ 教师 teacher / teacher2 / teacher3（外聘） / 辅导员 counselor（沈嘉禾） / <b>评审 judge（辅导员+兼授课，全部班级）</b> ｜ 学生 student（林一舟）</p>
+          <p style="margin-top:8px">学校门户（统一身份认证）· <a href="https://portal.qcuwh.edu.cn/" target="_blank" rel="noopener" style="color:var(--gold-light);text-decoration:underline;text-underline-offset:3px">前往</a></p>
+          <p style="margin-top:4px;font-size:12px;color:var(--muted)">已预留统一身份认证（CAS）单点登录接入点：部署后端并将票据校验置于服务端后，可切换为「统一认证登录」</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 应用主视图 ==================== -->
+  <div id="app-view" class="app-view hidden">
+    <div id="sidebar-mask" class="sidebar-mask"></div>
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <img class="brand-logo" src="images/qxu-logo.png" alt="武汉晴川学院" onerror="this.style.display='none'">
+        <div class="brand-title">班级管理系统</div>
+        <div class="brand-sub">CLASS MANAGEMENT SYSTEM</div>
+      </div>
+      <nav id="nav-menu" class="nav-menu" aria-label="主导航"></nav>
+      <div id="sidebar-extra" class="sidebar-extra"></div>
+      <div id="sidebar-version" class="sidebar-version">v1.0 · 本地存储版</div>
+    </aside>
+    <div class="main-wrap">
+      <header class="topbar">
+        <button id="btn-menu" class="icon-btn" type="button" title="菜单" aria-label="打开侧边导航">☰</button>
+        <div id="topbar-title" class="topbar-title"></div>
+        <div class="topbar-right">
+          <button id="btn-search" class="topbar-search" type="button" title="全站检索（Ctrl + K）" aria-label="全站检索，Ctrl 加 K">检</button>
+          <span id="topbar-clock" class="topbar-clock"></span>
+          <select id="topbar-term" class="topbar-term" title="切换学期"></select>
+          <span class="term-na-tag" title="本页数据与学期无关（当期待办 / 今日数据 / 静态资料 / 名册与配置）">本页不适用</span>
+          <span id="topbar-user" class="topbar-user"></span>
+          <button id="btn-theme" class="theme-btn" type="button" title="切换深浅主题" aria-label="切换深浅主题">月</button>
+          <button id="btn-logout" class="btn btn-ghost btn-sm" type="button">退出登录</button>
+        </div>
+      </header>
+      <main id="page-content" class="page-content" tabindex="-1"></main>
+      <footer class="app-footer">明体达用 · 抱璞开新 ｜ 武汉晴川学院 · 计算机学院 · 毕业设计作品 ｜ <a href="https://www.qcuwh.cn" target="_blank" rel="noopener">学校官网</a> ｜ <a href="https://jkx.qcuwh.edu.cn" target="_blank" rel="noopener">计算机学院</a> ｜ <a href="https://portal.qcuwh.edu.cn/" target="_blank" rel="noopener">校园门户</a></footer>
+    </div>
+  </div>
+
+  <!-- Toast 轻提示容器（弹窗均为动态创建） -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- ECharts：成绩分析页图表库（CDN 加载；断网时页面自动降级为 CSS 图表，不影响使用） -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+
+  <!-- 注意：必须用普通 script（非 module），保证双击 index.html 以 file:// 打开也能运行 -->
+    <!-- SheetJS：Excel(.xlsx/.xls)/CSV 解析（本地内置，离线可用；第三方库，不计入软著源程序） -->
+  <script src="js/vendor/xlsx.full.min.js"></script>
+  <script src="js/utils.js?v=115"></script>
+  <script src="js/cn-calendar.js?v=115"></script>
+  <script src="js/weather.js?v=115"></script>
+  <script src="js/store.js?v=115"></script>
+  <script src="js/auth.js?v=115"></script>
+  <script src="js/ui.js?v=115"></script>
+  <script src="js/palette.js?v=115"></script>
+  <script src="js/pages/dashboard.js?v=115"></script>
+  <script src="js/pages/classes.js?v=115"></script>
+  <script src="js/pages/students.js?v=115"></script>
+  <script src="js/pages/scores.js?v=115"></script>
+  <script src="js/pages/analysis.js?v=115"></script>
+  <script src="js/pages/attendance.js?v=115"></script>
+  <script src="js/pages/attendance-report.js?v=115"></script>
+  <script src="js/pages/leaves.js?v=115"></script>
+  <script src="js/pages/classroom.js?v=115"></script>
+  <script src="js/pages/competitions.js?v=115"></script>
+  <script src="js/pages/final.js?v=115"></script>
+  <script src="js/pages/health.js?v=115"></script>
+  <script src="js/ai.js?v=115"></script>
+  <script src="js/pages/scholarships.js?v=115"></script>
+  <script src="js/pages/evaluations.js?v=115"></script>
+  <script src="js/pages/career.js?v=115"></script>
+  <script src="js/pages/ai.js?v=115"></script>
+  <script src="js/pages/downloads.js?v=115"></script>
+  <script src="js/pages/timetable.js?v=115"></script>
+  <script src="js/pages/notices.js?v=115"></script>
+  <script src="js/pages/users.js?v=115"></script>
+  <script src="js/pages/student-view.js?v=115"></script>
+  <script src="js/pages/profile.js?v=115"></script>
+  <script src="js/pages/logs.js?v=115"></script>
+  <script src="js/pages/data-mgmt.js?v=115"></script>
+  <!-- 缴费中心宿主桥接页：独立微应用（缴费中心/）的唯一接入点 -->
+  <script src="js/pages/payment-host.js?v=115"></script>
+  <script src="js/app.js?v=115"></script>
+</body>
+</html>

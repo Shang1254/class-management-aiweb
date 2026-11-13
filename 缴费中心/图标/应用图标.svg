@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- =====================================================
+    班级缴费中心 · 应用图标（藏青金·班徽硬币）
+    与 render_icon.py 同一套几何参数；本 SVG 用于 favicon 与无损缩放，
+    支付宝开放平台上传请用 应用图标_1024.png（方形直角原图）。
+  ===================================================== -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#16294e"/>
+      <stop offset="0.55" stop-color="#1b3a7a"/>
+      <stop offset="1" stop-color="#1d5dd8"/>
+    </linearGradient>
+    <radialGradient id="coin" gradientUnits="userSpaceOnUse" cx="512" cy="462" r="234">
+      <stop offset="0" stop-color="#f4e2b0"/>
+      <stop offset="0.45" stop-color="#e2c87f"/>
+      <stop offset="1" stop-color="#c9a24b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 底 -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- 证书角饰（四隅金线） -->
+  <g fill="none" stroke="#c9a24b" stroke-opacity="0.59" stroke-width="6">
+    <path d="M64 154 V84 Q64 64 84 64 H154"/>
+    <path d="M870 64 H940 Q960 64 960 84 V154"/>
+    <path d="M960 870 V940 Q960 960 940 960 H870"/>
+    <path d="M154 960 H84 Q64 960 64 940 V870"/>
+  </g>
+
+  <!-- 硬币：径向渐变面 + 暗金描边环 + 细淡金内环 + 左上高光弧 -->
+  <circle cx="512" cy="462" r="234" fill="url(#coin)"/>
+  <circle cx="512" cy="462" r="212" fill="none" stroke="#8a6a2a" stroke-width="10"/>
+  <circle cx="512" cy="462" r="174" fill="none" stroke="#f4e2b0" stroke-opacity="0.78" stroke-width="5"/>
+  <circle cx="512" cy="462" r="220" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="9"
+          stroke-dasharray="184.3 1198" stroke-dashoffset="-768"/>
+
+  <!-- ¥ 符号：投影 + 白色主体（圆帽描边） -->
+  <g fill="none" stroke-linecap="round" stroke-width="44">
+    <g stroke="#0a0a18" stroke-opacity="0.19" transform="translate(3,5)">
+      <path d="M410 330 L512 508 M614 330 L512 508 M512 508 L512 652 M414 554 H610 M414 616 H610"/>
+    </g>
+    <g stroke="#ffffff">
+      <path d="M410 330 L512 508 M614 330 L512 508 M512 508 L512 652 M414 554 H610 M414 616 H610"/>
+    </g>
+  </g>
+
+  <!-- 底部托带：「班 缴」楷体金字 + 两侧金线 -->
+  <g font-family="KaiTi, STKaiti, 'Noto Serif CJK SC', serif" font-size="88"
+     fill="#e2c87f" text-anchor="middle" dominant-baseline="central">
+    <text x="398" y="806">班</text>
+    <text x="626" y="806">缴</text>
+  </g>
+  <g stroke="#c9a24b" stroke-opacity="0.78" stroke-width="3">
+    <line x1="220" y1="846" x2="324" y2="846"/>
+    <line x1="700" y1="846" x2="804" y2="846"/>
+  </g>
+  <g fill="#c9a24b" fill-opacity="0.86">
+    <circle cx="220" cy="846" r="4"/><circle cx="324" cy="846" r="4"/>
+    <circle cx="700" cy="846" r="4"/><circle cx="804" cy="846" r="4"/>
+  </g>
+</svg>
